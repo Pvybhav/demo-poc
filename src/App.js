@@ -1,23 +1,33 @@
-import logo from './logo.svg';
+import React, { lazy, Suspense } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
+
+import Header from './components/Header';
+import Loader from './components/Loader';
+import Footer from './components/Footer';
+
+import ErrorBoundary from './views/ErrorBoundary';
+
+const LandingPage = lazy(() => import('./views/LandingPage'));
+const Products = lazy(() => import('./views/Products'));
+const About = lazy(() => import('./views/About'));
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <Router>
+        <ErrorBoundary>
+          <Header />
+          <Suspense fallback={<Loader />}>
+            <Switch>
+              <Route exact path='/products' component={Products} />
+              <Route exact path='/about' component={About} />
+              <Route exact path='/' component={LandingPage} />
+            </Switch>
+          </Suspense>
+          <Footer />
+        </ErrorBoundary>
+      </Router>
     </div>
   );
 }
